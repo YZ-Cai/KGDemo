@@ -147,7 +147,7 @@ initialize module template, and the input variable is 100
 
 此时Python已成功将下方的图加载完毕（这张图就是data/DefaultDataset文件夹中的图数据：
 
-![InitialGraph](ReadMeImages\InitialGraph.png)
+![InitialGraph](ReadMeImages/InitialGraph.png)
 
 
 
@@ -157,7 +157,7 @@ initialize module template, and the input variable is 100
 
 框中的链接为：http://localhost:5000/getNeighbors，Body中的数据为{"nodename": "节点0"}
 
-![GetNeighborPostman](ReadMeImages\GetNeighborPostman.png)
+![GetNeighborPostman](ReadMeImages/GetNeighborPostman.png)
 
 方框所示处确保与上图一致后，点击“Send”按钮，后端Python程序会在下方返回了以json格式存储的图数据，其中有两条边：（节点0，边0，节点1）、（节点0，边1，节点2）；有三个点：节点0、1和2。
 
@@ -611,11 +611,11 @@ def testAllAPIs(self, variableFromFrontEnd):
 
 框中的链接为：http://localhost:5000/testModuleTemplate，Body中的数据为{"variableFromFrontEnd":"哈哈哈哈哈"}
 
-![TestAPIsPostman](ReadMeImages\TestAPIsPostman.png)
+![TestAPIsPostman](ReadMeImages/TestAPIsPostman.png)
 
 点击“Send”，可以看到下方显示了大量API接口返回的结果：
 
-![TestAPIsPostmanResult](ReadMeImages\TestAPIsPostmanResult.png)
+![TestAPIsPostmanResult](ReadMeImages/TestAPIsPostmanResult.png)
 
 #### 3.5.2 接口的执行逻辑
 
