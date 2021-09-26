@@ -86,7 +86,7 @@
       getFullGraph() {
         // 发送Post请求获取数据
         let that = this;
-        axios.post('getFullGraph').then(function (response) {
+        axios.post('/api/getFullGraph').then(function (response) {
           // 写入图数据
           var graph = response.data.graph;
           var inputNodes = graph.nodes;
@@ -109,7 +109,7 @@
         if (this.getNeighborsInput!='') {
           // 发送Post请求获取数据
           let that = this;
-          axios.post('getNeighbors', {
+          axios.post('/api/getNeighbors', {
             nodename: this.getNeighborsInput
           }).then(function (response) {
             // 写入图数据

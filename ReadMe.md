@@ -147,7 +147,7 @@ initialize module template, and the input variable is 100
 
 此时Python已成功将下方的图加载完毕（这张图就是data/DefaultDataset文件夹中的图数据：
 
-![InitialGraph](ReadMeImages\InitialGraph.png)
+![InitialGraph](ReadMeImages/InitialGraph.png)
 
 
 
@@ -155,13 +155,13 @@ initialize module template, and the input variable is 100
 
 打开Postman软件，按照下图进行设置
 
-框中的链接为：http://localhost:5000/getNeighbors，Body中的数据为{"nodename": "节点0"}
+框中的链接为： http://localhost:5000/getNeighbors ，Body中的数据为{"nodename": "节点0"}
 
-![GetNeighborPostman](ReadMeImages\GetNeighborPostman.png)
+![GetNeighborPostman](ReadMeImages/GetNeighborPostman.png)
 
 方框所示处确保与上图一致后，点击“Send”按钮，后端Python程序会在下方返回了以json格式存储的图数据，其中有两条边：（节点0，边0，节点1）、（节点0，边1，节点2）；有三个点：节点0、1和2。
 
-其实http://localhost:5000/getNeighbors对应的这个请求链接，就是向Python请求某个点与其邻居构成的子图。而Body中的数据{"nodename": "节点0"}就是这个请求的参数封装的json，意思是查询的点的名称（nodename)是”节点0“。所以这个查询意思就是请求”节点0“与其邻居构成的子图，而Python接收到该请求后，通过调用内部函数得到数据并封装成json格式返回给Postman，就是我们看到的以json格式存储的有两条边与三个点的图数据。
+其实 http://localhost:5000/getNeighbors 对应的这个请求链接，就是向Python请求某个点与其邻居构成的子图。而Body中的数据{"nodename": "节点0"}就是这个请求的参数封装的json，意思是查询的点的名称（nodename)是”节点0“。所以这个查询意思就是请求”节点0“与其邻居构成的子图，而Python接收到该请求后，通过调用内部函数得到数据并封装成json格式返回给Postman，就是我们看到的以json格式存储的有两条边与三个点的图数据。
 
 
 
@@ -205,7 +205,7 @@ initialize module template, and the input variable is 100
 
   第二个接口名为'/getNeighbors'，可以通过'POST'请求访问，然后会向发出请求者（比如Postman）返回结果，其实就是第1.2节中Postman所发送的请求响应来源。注意到其中的第1~2行对请求的附加json数据进行解析，也就是在{"nodename": "节点0"}中提取出nodename变量值为“节点0”，并传递给basicService类中的getNeighbors(nodeName)函数，得到该点及其邻居构成的子图。
 
-- 第三部分用于启动后端服务，访问服务的端口为5000。所以可以通过http://localhost:5000并加入具体请求路径（如http://localhost:5000/getNeighbors）发送请求。
+- 第三部分用于启动后端服务，访问服务的端口为5000。所以可以通过 http://localhost:5000 并加入具体请求路径（如 http://localhost:5000/getNeighbors ）发送请求。
 
   ```python
   """
@@ -609,17 +609,17 @@ def testAllAPIs(self, variableFromFrontEnd):
 
 首先请按第1.1节的提示运行Server.py，完成启动后，请打开Postman，按下图所示输入相应信息：
 
-框中的链接为：http://localhost:5000/testModuleTemplate，Body中的数据为{"variableFromFrontEnd":"哈哈哈哈哈"}
+框中的链接为：http://localhost:5000/testModuleTemplate ，Body中的数据为{"variableFromFrontEnd":"哈哈哈哈哈"}
 
-![TestAPIsPostman](ReadMeImages\TestAPIsPostman.png)
+![TestAPIsPostman](ReadMeImages/TestAPIsPostman.png)
 
 点击“Send”，可以看到下方显示了大量API接口返回的结果：
 
-![TestAPIsPostmanResult](ReadMeImages\TestAPIsPostmanResult.png)
+![TestAPIsPostmanResult](ReadMeImages/TestAPIsPostmanResult.png)
 
 #### 3.5.2 接口的执行逻辑
 
-当Postman（或者前端JavaScript）向http://localhost:5000/testModuleTemplate发出POST请求时，首先位于http://localhost:5000的后端Python服务会接收到具体请求路径为`/testModuleTemplate`，在Server.py中找到对应此请求路径的函数执行：
+当Postman（或者前端JavaScript）向 http://localhost:5000/testModuleTemplate 发出POST请求时，首先位于 http://localhost:5000 的后端Python服务会接收到具体请求路径为`/testModuleTemplate`，在Server.py中找到对应此请求路径的函数执行：
 
 ```python
 # test module template 
@@ -684,3 +684,88 @@ def testAllAPIs(self, variableFromFrontEnd):
 
 - 第一部分对私有变量self.__privateVariableName进行赋值
 - 第二部分测试了所有Graph类下的图数据读写API，并将结果以json格式返回给Server.py中的testModuleTemplate()函数，再返回至Postman（或者前端JavaScript）。也就是第3.5.1节中看到的返回内容。
+
+
+
+## 4 远程服务器部署
+
+### 4.1 服务器配置
+
+由于Python后端是通过5000端口提供服务，因此服务器必须暴露5000接口以供前端或Postman访问，另外前端页面是通过8080端口访问的。第一步必须在DBCloud管理后台添加8080端口与5000端口：
+
+![ServerPort](ReadMeImages/ServerPort.png)
+
+DBCloud后端会显示该实例的5000端口所对应的主机实际端口。当Python程序运行在服务器上时，Postman中需要向该地址与端口发送请求，而不是之前所用的本地服务地址localhost:5000。
+
+![ServerPorts](ReadMeImages/ServerPorts.png)
+
+
+
+### 4.2 前端配置
+
+为了能通过链接直接访问网页，首先在服务器中安装nginx并运行nginx，执行以下命令：
+
+```
+sudo apt-get install nginx
+nginx
+```
+
+在浏览器中打开DBCloud后台显示的8080端口的实际链接与端口，可以看到如下界面：
+
+![FrontEndPort](ReadMeImages/FrontEndPorts.png)
+
+![nginx](ReadMeImages/nginx.png)
+
+接下来将前端代码打包成可部署至服务器的生产模式，在frontend文件夹下执行如下命令：
+
+```
+npm run build
+```
+
+打包完毕后可以看到frontend文件夹下新增了一个dist文件夹，将dist文件夹上传至服务器根目录下的home文件夹中。打开/etc/nginx/nginx.conf文件，在其中http的配置的最后加入如下内容（应该是在第63行）：
+
+```
+server {
+       		listen 8080;
+        	server_name localhost;
+        	location / {
+                	root /home/dist;
+					index index.html;
+  		        	try_files $uri $uri/ /index.html;
+        	}
+        	location /api {  
+            		proxy_pass http://localhost:5000; 
+					rewrite "^/api/(.*)$" $1 break;	
+        	} 
+	}
+```
+
+运行如下命令检查配置文件并重启nginx：
+
+```
+nginx -t
+nginx -s reload
+```
+
+在浏览器中打开DBCloud后台显示的8080端口的实际链接与端口，可以看到如下界面：
+
+![EmptyFrontEnd](ReadMeImages/EmptyFrontEnd.png)
+
+可以看到此时网页中并未展现图信息，这是因为在该实例中还未运行后端Python服务，自然前端也没办法获得图数据。下一节将在服务器中启动后端服务。
+
+
+
+### 4.3 运行后端程序
+
+将整个代码包传至服务器后，记得先pip install需要的包（pip install flask），然后运行Server.py。
+
+然后在Postman中输入第4.1节中所述的主机实际地址与端口，以及其他相应信息，即可访问到结果：
+
+![ServerPostman](ReadMeImages/ServerPostman.png)
+
+在确保Python后端正常运行的情况下，在浏览器中打开DBCloud后台显示的8080端口的实际链接与端口，可以看到前端的图：
+
+![ServerFrontEnd](ReadMeImages/ServerFrontEnd.png)
+
+此时若在后端Python程序中对图信息进行了一定的修改，刷新网页就能直接看到更新后图数据。
+
